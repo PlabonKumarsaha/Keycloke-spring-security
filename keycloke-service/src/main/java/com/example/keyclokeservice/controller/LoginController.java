@@ -2,7 +2,9 @@ package com.example.keyclokeservice.controller;
 
 import com.example.keyclokeservice.response.LoginRequest;
 import com.example.keyclokeservice.response.LoginResponse;
+import com.example.keyclokeservice.response.TokenRequest;
 import com.example.keyclokeservice.service.LoginService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,4 +24,8 @@ public class LoginController {
         return loginService.login(loginRequest);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Response> logout (@RequestBody TokenRequest token) {
+        return loginService.logout(token);
+    }
 }

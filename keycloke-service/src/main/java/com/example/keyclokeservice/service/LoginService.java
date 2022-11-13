@@ -2,6 +2,7 @@ package com.example.keyclokeservice.service;
 
 import com.example.keyclokeservice.response.LoginRequest;
 import com.example.keyclokeservice.response.LoginResponse;
+import com.example.keyclokeservice.response.TokenRequest;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +48,29 @@ public class LoginService {
                 restTemplate.postForEntity("http://localhost:8180/auth/realms/auth-realm/protocol/openid-connect/token",
                         httpEntity, LoginResponse.class);
         return new ResponseEntity<>(loginResponse.getBody(), HttpStatus.OK);
+
+
+    }
+
+    public ResponseEntity<Response> logout(TokenRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("client_id", clientId);
+        map.add("client_secret", clientSecret);
+        map.add("refresh_token", request.getToken());
+
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(map,headers);
+
+        ResponseEntity<Response> response = restTemplate.postForEntity("http://localhost:8180/auth/realms/auth-realm/protocol/openid-connect/logout", httpEntity, Response.class);
+
+        Response res = new Response();
+        if(response.getStatusCode().is2xxSuccessful()) {
+            res.setMessage("Logged out successfully");
+        }
+        return new ResponseEntity<>(res,HttpStatus.OK);
 
 
     }
