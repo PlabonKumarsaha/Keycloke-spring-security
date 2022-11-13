@@ -19,8 +19,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse>login(@RequestBody LoginRequest loginRequest){
-        loginService.login(loginRequest);
-        return null;
+        return loginService.login(loginRequest);
     }
 
 }
