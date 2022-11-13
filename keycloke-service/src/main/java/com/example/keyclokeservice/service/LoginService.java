@@ -1,5 +1,6 @@
 package com.example.keyclokeservice.service;
 
+import com.example.keyclokeservice.response.IntrospectResponse;
 import com.example.keyclokeservice.response.LoginRequest;
 import com.example.keyclokeservice.response.LoginResponse;
 import com.example.keyclokeservice.response.TokenRequest;
@@ -71,7 +72,23 @@ public class LoginService {
             res.setMessage("Logged out successfully");
         }
         return new ResponseEntity<>(res,HttpStatus.OK);
-
-
     }
+
+    // checks if a refresh token is expired or not
+    public ResponseEntity<IntrospectResponse> introspect(TokenRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("client_id", clientId);
+        map.add("client_secret", clientSecret);
+        map.add("token", request.getToken());
+
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(map,headers);
+
+        ResponseEntity<IntrospectResponse> response = restTemplate.postForEntity("http://localhost:8180/auth/realms/auth-realm/protocol/openid-connect/token/introspect", httpEntity, IntrospectResponse.class);
+        return new ResponseEntity<>(response.getBody(),HttpStatus.OK);
+    }
+
 }

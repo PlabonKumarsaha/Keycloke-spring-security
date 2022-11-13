@@ -1,5 +1,6 @@
 package com.example.keyclokeservice.controller;
 
+import com.example.keyclokeservice.response.IntrospectResponse;
 import com.example.keyclokeservice.response.LoginRequest;
 import com.example.keyclokeservice.response.LoginResponse;
 import com.example.keyclokeservice.response.TokenRequest;
@@ -19,13 +20,21 @@ public class LoginController {
     @Autowired
     LoginService loginService;
 
+    // login
     @PostMapping("/login")
     public ResponseEntity<LoginResponse>login(@RequestBody LoginRequest loginRequest){
         return loginService.login(loginRequest);
     }
 
+    //logout.expires the refresh token and token
     @PostMapping("/logout")
     public ResponseEntity<Response> logout (@RequestBody TokenRequest token) {
         return loginService.logout(token);
+    }
+
+    //checks if a refresh token is available or not
+    @PostMapping("/introspect")
+    public ResponseEntity<IntrospectResponse> introspect(@RequestBody TokenRequest token) {
+        return loginService.introspect(token);
     }
 }
